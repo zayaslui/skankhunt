@@ -13,5 +13,5 @@ php artisan make:model Flight -crRs
 //ejecutar un seed
 php artisan migrate:refresh --seed# passport
 
-
 //personal access token solo funciona con el formulario
+s
