@@ -38,3 +38,5 @@ Route::post('/client/posts', function (Request $request) {
 })->middleware('client');
 
 
+Route::get('/posts-all', [App\Http\Controllers\PostController::class, 'index']);
+
