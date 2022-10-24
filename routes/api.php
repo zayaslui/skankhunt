@@ -4,44 +4,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+//Route::get('/posts-all', [App\Http\Controllers\PostController::class, 'index']);
+
+Route::group(['prefix' => 'public'], function () {
+    
+    //create token   
+    //Route::post('/getClientCrendentialsGrantToken'  , 'App\Http\Controllers\Auth\FuckingAuthController@getClientCrendentialsGrantToken');
+    //Route::post('/getPersonalAccessToken'           , 'App\Http\Controllers\Auth\FuckingAuthController@getPersonalAccessToken');
+    Route::post('/getPasswordGrantToken'              , [App\Http\Controllers\Auth\FuckingAuthController::class,'getPasswordGrantToken']);
+    Route::post('/getRegister'                        , [App\Http\Controllers\Auth\FuckingAuthController::class,'getRegister']);
+    Route::post('/getLogin'                           , [App\Http\Controllers\Auth\FuckingAuthController::class,'getLogin']);
+
 });
 
-Route::get('/posts', function () {
-    return Post::all();
-})->middleware('auth:api');
+//se definen todos los endpoints de cualquier REST
+Route::group(['prefix' => 'secure/rest'], function () {
 
-//solo los clientes autorizados
-Route::get('/client/posts', function () {
-    return Post::all();
-})->middleware('client');
+    Route::get('/obtenerPosts'                       ,[App\Http\Controllers\ClientsResourcesController::class,'obtenerPosts']);
+    Route::get('/get'                                ,function(){return "HELLO SECURE SKANKHUNT!!!";});
+    
+});
 
-//solo los clientes autorizados
-Route::post('/client/posts', function (Request $request) {
-    Post::create([
-        'title' => $request -> input('title'),
-        'body'  => $request -> input('body')
-    ]);
-    return ['status' => 200];
-})->middleware('client');
+Route::group(['prefix' => 'secure/rest2'], function () {
 
-
-Route::get('/posts-all', [App\Http\Controllers\PostController::class, 'index']);
-
-Route::group(['prefix' => 'secure'], function () {
-
-    Route::post('/login', 'App\Http\Controllers\Auth\FuckingAuthController@register');
+Route::get('/get'                                     ,function(){return "HELLO SECURE SKANKHUNT!!!";});
 
 });

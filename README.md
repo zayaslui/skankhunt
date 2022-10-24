@@ -16,3 +16,6 @@ php artisan make:model Post -crRs
 php artisan migrate:refresh --seed# passport
 
 //personal access token solo funciona con el formulario
+
+publicar .env   
+APP_OAUTH_PROVIDER=http://localhost:8080
