@@ -16,6 +16,12 @@ use GrahamCampbell\ResultType\Success;
 class FuckingAuthController extends Controller
 {
 
+    public function getLogout(Request $request){
+
+        
+
+    }
+
 
     public function getLogin(Request $request){
 
@@ -82,6 +88,7 @@ class FuckingAuthController extends Controller
         $MY_REQUEST = new Request();
         $MY_REQUEST->setMethod('POST');
         $MY_REQUEST->request->add($params);
+
         //$result             = $user->createToken('Password Grant Client')->accessToken;
         $result               = $this->getPasswordGrantToken($MY_REQUEST); //asincronico
         
