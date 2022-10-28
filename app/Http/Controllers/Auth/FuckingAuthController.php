@@ -9,19 +9,57 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\Services;
 
 use GrahamCampbell\ResultType\Success;
+
+use Laravel\Passport\TokenRepository;
+use Laravel\Passport\RefreshTokenRepository;
 
 class FuckingAuthController extends Controller
 {
 
     public function getLogout(Request $request){
 
-        
+        $tokenRepository = app(TokenRepository::class);
+        $refreshTokenRepository = app(RefreshTokenRepository::class);
 
+        //found $user
+        $user = User::where('email', '=', $request['email'])->first();
+        $tokenId = "";
+        if($user!=null){
+            $auth_header = explode('.', $request -> token);
+            $token = $auth_header[1];
+            $token_header_json = base64_decode($token);
+            $token_header_array = json_decode($token_header_json, true);
+            if($token_header_array["jti"]!=null){
+                $tokenId = $token_header_array["jti"];
+            }
+        }
+        if($tokenId!=""){
+            // Revoke user token
+            $tokenRepository->revokeAccessToken($tokenId);
+            // Revoke all of the token's refresh tokens...
+            $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
+            return response()->json([
+                'success' => true,
+                'from'    => 'skankhunt',
+                'message' => 'tokenId revoked',
+            ], 200); 
+        }else{
+            return response()->json([
+                'success' => false,
+                'from'    => 'skankhunt',
+                'message' => 'tokenId no encontrado',
+            ], 401);
+        }
     }
 
+    public function revokeUserToken(){
+
+    }
 
     public function getLogin(Request $request){
 
@@ -40,8 +78,8 @@ class FuckingAuthController extends Controller
         if($validacion2){
             $MY_REQUEST->request->add(["error"=>$validacion2]);
             return $MY_REQUEST;
-        }                                                                                                                                                       
-
+        }
+        
         $MY_REQUEST->request->add($params);
 
         $result               = $this->getPasswordGrantToken($MY_REQUEST); //asincronico
