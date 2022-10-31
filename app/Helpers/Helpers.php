@@ -66,7 +66,7 @@ class Helper {
     public static function getUrlProviderRest() : string{
         $APP_REST_PROVIDER = $_ENV['APP_REST_PROVIDER'];
         return $APP_REST_PROVIDER;
-    }
+    }   
 
 
 }

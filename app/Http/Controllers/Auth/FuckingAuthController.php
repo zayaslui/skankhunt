@@ -22,17 +22,23 @@ class FuckingAuthController extends Controller
 
     public function getLogout(Request $request){
 
-        $tokenRepository = app(TokenRepository::class);
+        $tokenRepository        = app(TokenRepository::class);
         $refreshTokenRepository = app(RefreshTokenRepository::class);
 
+        //return  $request->header('Authorization');
+
         //found $user
-        $user = User::where('email', '=', $request['email'])->first();
+        $tokenBearer            = $request->header('Authorization');
+        $user                   = User::where('name', '=', $request['name'])->first();
         $tokenId = "";
-        if($user!=null){
-            $auth_header = explode('.', $request -> token);
-            $token = $auth_header[1];
-            $token_header_json = base64_decode($token);
+
+        if($user!=null && $tokenBearer!=null){
+            $tokenBearerArray   = explode(" ",$tokenBearer);
+            $auth_header        = explode('.', $tokenBearerArray[1]);
+            $token              = $auth_header[1];
+            $token_header_json  = base64_decode($token);
             $token_header_array = json_decode($token_header_json, true);
+            
             if($token_header_array["jti"]!=null){
                 $tokenId = $token_header_array["jti"];
             }

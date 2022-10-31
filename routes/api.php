@@ -10,26 +10,25 @@ use App\Models\Post;
 
 Route::group(['prefix' => 'public'], function () {
     
-    //create token   
+    //create token
     //Route::post('/getClientCrendentialsGrantToken'  , 'App\Http\Controllers\Auth\FuckingAuthController@getClientCrendentialsGrantToken');
     //Route::post('/getPersonalAccessToken'           , 'App\Http\Controllers\Auth\FuckingAuthController@getPersonalAccessToken');
 
     Route::post('/getPasswordGrantToken'              , [App\Http\Controllers\Auth\FuckingAuthController::class, 'getPasswordGrantToken']);
     Route::post('/getRegister'                        , [App\Http\Controllers\Auth\FuckingAuthController::class, 'getRegister']);
     Route::post('/getLogin'                           , [App\Http\Controllers\Auth\FuckingAuthController::class, 'getLogin']);
-    Route::post('/getLogout'                          , [App\Http\Controllers\Auth\FuckingAuthController::class, 'getLogout']);
-        
+    
 });
 
 // se definen todos los endpoints de cualquier REST estaran con un middleware de checktoken
-Route::group(['prefix' => 'secure/rest', 'middleware' => 'client'], function () {
+Route::group(['prefix' => 'secure/rest', 'middleware' => 'auth:api'], function () {
     
-    Route::get('/obtenerPosts'                       ,[App\Http\Controllers\ClientsResourcesController::class,'obtenerPosts']);    
     //administracion de usuario
+    Route::get('/obtenerPosts'                        ,[App\Http\Controllers\ClientsResourcesController::class,  'obtenerPosts']);
     
 });
 //->middleware('auth:api');
 
-Route::group(['prefix' => 'secure/rest2'], function () {
-
+Route::group(['prefix' => 'secure/auth', 'middleware' => 'auth:api'], function () {
+    Route::post('/getLogout'                          , [App\Http\Controllers\Auth\FuckingAuthController::class, 'getLogout']);
 });
